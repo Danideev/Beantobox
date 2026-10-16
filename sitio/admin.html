@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Norte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  /* ---------- ajustes propios del panel ---------- */
+  .rail-admin{width:270px;flex:0 0 270px}
+  .sec{display:none}
+  .sec.on{display:block}
+  .ed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .ed-campo{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+  .ed-campo label{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--suave);font-weight:800}
+  .ed-campo input,.ed-campo textarea,.ed-campo select{
+    background:rgba(0,0,0,.28);border:1.5px solid var(--linea);border-radius:14px;
+    color:var(--tinta);padding:14px 15px;font-size:1.03rem;width:100%
+  }
+  .ed-campo input:focus,.ed-campo textarea:focus{border-color:var(--acento);outline:none}
+  .ed-campo textarea{min-height:96px;resize:vertical;line-height:1.6}
+  .ed-nota{font-size:.88rem;color:var(--suave);margin:-6px 0 16px}
+  .lista-edit{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+  .fila-edit{display:flex;gap:9px;align-items:center}
+  .fila-edit input{flex:1;background:rgba(0,0,0,.28);border:1.5px solid var(--linea);border-radius:14px;color:var(--tinta);padding:13px 14px;font-size:1.02rem}
+  .fila-edit input:focus{border-color:var(--acento);outline:none}
+  .fila-edit .borrar{background:rgba(255,255,255,.08);border:1px solid var(--linea);color:var(--tinta-2);border-radius:12px;padding:11px 15px;font-weight:800;cursor:pointer;flex:0 0 auto}
+  .fila-edit .borrar:hover{background:rgba(255,120,120,.2);color:#FFB4B4;border-color:rgba(255,120,120,.4)}
+  .fila-obj{background:rgba(255,255,255,.05);border:1px solid var(--linea);border-radius:18px;padding:16px;margin-bottom:12px}
+  .fila-obj .campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .fila-obj .pie-fila{display:flex;justify-content:flex-end;margin-top:12px}
+  .anadir{display:flex;gap:9px;margin-top:6px}
+  .anadir input{flex:1;background:rgba(0,0,0,.28);border:1.5px dashed var(--linea-2);border-radius:14px;color:var(--tinta);padding:13px 15px;font-size:1.02rem}
+  .anadir input:focus{border-color:var(--acento);outline:none}
+  .barra-guardar{position:sticky;top:0;z-index:50;display:flex;gap:12px;align-items:center;
+    padding:18px 0 14px;background:linear-gradient(180deg,var(--bg) 74%,rgba(13,17,32,0))}
+  .barra-guardar .sep{flex:1}
+  .btn-guardar{background:var(--acento);color:var(--acento-ink);font-family:var(--fuente-d);font-size:1.12rem;padding:15px 30px;box-shadow:0 12px 30px rgba(139,233,193,.24)}
+  .btn-guardar[disabled]{opacity:.55}
+  .btn-herr{background:var(--panel);border:1.5px solid var(--linea);color:var(--tinta-2);border-radius:16px;padding:14px 20px;font-weight:800;cursor:pointer;font-size:1rem}
+  .btn-herr:hover{background:rgba(255,255,255,.1);color:var(--tinta)}
+  .sucio{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--alerta)}
+  .sucio.limpio{color:var(--suave)}
+  #jsonBruto{width:100%;min-height:420px;background:rgba(0,0,0,.35);border:1.5px solid var(--linea);
+    border-radius:18px;color:#CFE9DC;padding:18px;font-family:ui-monospace,Consolas,monospace;font-size:.94rem;line-height:1.55}
+  #jsonBruto:focus{border-color:var(--acento);outline:none}
+  .sec h2{font-size:clamp(1.7rem,3vw,2.5rem);margin-bottom:10px}
+  .sec .intro{color:var(--tinta-2);max-width:62ch;margin-bottom:8px}
+  .chip-estado{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:7px 13px;border-radius:99px;background:rgba(255,255,255,.1);color:var(--tinta-2)}
+  .chip-estado.ok{background:rgba(127,227,168,.18);color:var(--ok)}
+  .chip-estado.err{background:rgba(255,140,140,.18);color:#FF9C9C}
+</style>
+</head>
+<body>
+<div class="nubes anim" aria-hidden="true"><i class="n1"></i><i class="n2"></i><i class="n3"></i><i class="n4"></i></div>
+<a class="saltar" href="#principal">Saltar al contenido</a>
+
+<div class="app" id="app">
+
+  <aside class="rail rail-admin" id="rail" aria-label="Secciones del panel">
+    <div class="marca">
+      <div class="bol" aria-hidden="true">N</div>
+      <div>
+        <div class="nom">Panel de edición</div>
+        <div class="sub" id="subMarca">Norte</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="navAdmin">
+      <div class="lab">Interfaz</div>
+      <button class="on" data-sec="marca">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20l4-1 10-10-3-3L5 16z"/><path d="M14 6l3 3"/></svg>
+        <span>Marca e inicio</span>
+      </button>
+      <button data-sec="preguntas">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 9a3 3 0 116 0c0 2-3 2.2-3 4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+        <span>Preguntas iniciales</span>
+      </button>
+      <button data-sec="menu">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        <span>Menú</span>
+      </button>
+      <button data-sec="botones">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M8 12h.01M16 12h.01"/></svg>
+        <span>Botones</span>
+      </button>
+      <button data-sec="textos">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg>
+        <span>Encabezados y bloques</span>
+      </button>
+      <div class="lab">Contenido</div>
+      <button data-sec="plan">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h7v14H4zM13 5h7v9h-7z"/></svg>
+        <span>Planes y validación</span>
+      </button>
+      <button data-sec="social">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span>Fechas y hábitos</span>
+      </button>
+      <button data-sec="mensajes">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12a8 8 0 11-3-6.2"/><path d="M8 12l3 3 5-6"/></svg>
+        <span>Mensajes motivacionales</span>
+      </button>
+      <button data-sec="ofertas">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+        <span>Ofertas y clientes</span>
+      </button>
+      <button data-sec="metas">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+        <span>Metas y áreas</span>
+      </button>
+      <div class="lab">Avanzado</div>
+      <button data-sec="integraciones">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 10-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 107 7l1-1"/></svg>
+        <span>Integraciones</span>
+      </button>
+      <button data-sec="json">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 4l-4 8 4 8M16 4l4 8-4 8"/></svg>
+        <span>JSON completo</span>
+      </button>
+    </nav>
+
+    <div class="pie">
+      <span id="pieInfo">catalogo.js · edición segura</span>
+      <span><a href="index.html" style="color:var(--acento)">← Ver el panel</a></span>
+    </div>
+  </aside>
+  <div class="venja" id="scrimRail" hidden></div>
+
+  <main class="cuerpo" id="principal">
+    <header class="barra-guardar">
+      <button class="menu" id="btnMenu" aria-expanded="false" aria-controls="rail">Menú</button>
+      <div class="crumb"><b id="tituloSec">Marca e inicio</b></div>
+      <div class="sep"></div>
+      <span class="sucio limpio" id="estadoEdicion">Sin cambios</span>
+      <button class="btn-herr" id="btnDescartar">Descartar</button>
+      <button class="btn-herr" id="btnDescargar">Descargar</button>
+      <button class="btn btn-guardar" id="btnGuardar">Guardar</button>
+    </header>
+
+    <div id="avisoServer" class="ed-nota">Si el servidor no responde, <b>Guardar</b> descarga el archivo para que lo reemplaces a mano.</div>
+
+    <!-- ---------- MARCA E INICIO ---------- -->
+    <section class="sec on" id="sec-marca" data-titulo="Marca e inicio">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Interfaz</div>
+          <h2>Marca e inicio</h2>
+          <p class="intro">Nombre, pantalla de bienvenida y los primeros segundos que ve quien entra.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Identidad</div>
+        <div class="ed-grid" id="campos-marca"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Pantalla de bienvenida</div>
+        <div class="ed-grid" id="campos-inicio"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Saludos y estados del día</div>
+        <div class="ed-grid" id="campos-saludo"></div>
+      </div>
+    </section>
+
+    <!-- ---------- PREGUNTAS INICIALES ---------- -->
+    <section class="sec" id="sec-preguntas" data-titulo="Preguntas iniciales">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Onboarding</div>
+          <h2>Preguntas iniciales</h2>
+          <p class="intro">Textos de los 3 pasos, etiquetas y las opciones cerradas que se marcan. El límite de proyectos y el orden lo decide el sistema.</p>
+        </div>
+      </div>
+      <div id="preguntasDinamicas"></div>
+    </section>
+
+    <!-- ---------- MENÚ ---------- -->
+    <section class="sec" id="sec-menu" data-titulo="Menú">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Navegación</div>
+          <h2>Menú</h2>
+          <p class="intro">Cómo se llaman las secciones en el rail de escritorio y en la barra inferior del móvil. Las vistas no se eliminan: sólo se renombran.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Grupos del menú</div>
+        <div class="ed-grid" id="campos-menu-grupos"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Secciones (escritorio)</div>
+        <div class="ed-grid" id="campos-menu-items"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Secciones (móvil, corto)</div>
+        <div class="ed-grid" id="campos-menu-movil"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Barra superior</div>
+        <div class="ed-grid" id="campos-topbar"></div>
+      </div>
+    </section>
+
+    <!-- ---------- BOTONES ---------- -->
+    <section class="sec" id="sec-botones" data-titulo="Botones">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Acciones</div>
+          <h2>Botones</h2>
+          <p class="intro">La etiqueta de cada botón de la app. El sistema no añade botones nuevos: aquí sólo cambian cómo se leen.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Botones de la aplicación</div>
+        <div class="ed-grid" id="campos-botones"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Navegación del cuestionario</div>
+        <div class="ed-grid" id="campos-acciones"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Cierre del onboarding</div>
+        <div class="ed-grid" id="campos-listo"></div>
+      </div>
+    </section>
+
+    <!-- ---------- ENCABEZADOS Y BLOQUES ---------- -->
+    <section class="sec" id="sec-textos" data-titulo="Encabezados y bloques">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Textos de las vistas</div>
+          <h2>Encabezados y bloques</h2>
+          <p class="intro">Cada pantalla tiene un antetítulo, un título y una bajada. También los bloques del inicio y las pestañas de prospectos.</p>
+        </div>
+      </div>
+      <div id="encabezadosDinamicos"></div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Bloques del inicio</div>
+        <div class="ed-grid" id="campos-bloques"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Pestañas, títulos de sección y etiquetas de tarjetas</div>
+        <div class="ed-grid" id="campos-misc"></div>
+      </div>
+    </section>
+
+    <!-- ---------- PLANES Y VALIDACIÓN ---------- -->
+    <section class="sec" id="sec-plan" data-titulo="Planes y validación">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Generación de tareas</div>
+          <h2>Planes y validación</h2>
+          <p class="intro">Tareas que arma el sistema por tipo de objetivo, y el modelo de validación que se muestra en cada proyecto. Usa <b>{{puesto}}</b> para insertar el puesto elegido.</p>
+        </div>
+      </div>
+      <div id="planesDinamicos"></div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Modelo de validación de negocio</div>
+        <div class="ed-grid" id="campos-validacion"></div>
+      </div>
+    </section>
+
+    <!-- ---------- FECHAS Y HÁBITOS ---------- -->
+    <section class="sec" id="sec-social" data-titulo="Fechas y hábitos">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Calendario y vida esencial</div>
+          <h2>Fechas y hábitos</h2>
+          <p class="intro">Fechas precargadas para todo usuario (mes-día), fechas móviles calculadas cada año y los rituales de salud y familia.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Fechas fijas (mes-día)</div>
+        <div class="ed-grid" id="campos-eventosFijos"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Fechas móviles</div>
+        <div class="ed-grid" id="campos-eventosMoviles"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Rituales de vida esencial</div>
+        <div class="ed-grid" id="campos-habitos"></div>
+      </div>
+    </section>
+
+    <!-- ---------- MENSAJES ---------- -->
+    <section class="sec" id="sec-mensajes" data-titulo="Mensajes motivacionales">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Acompañamiento</div>
+          <h2>Mensajes motivacionales</h2>
+          <p class="intro">Aparecen solos cada 8 minutos y en los hitos (cada 3 tareas). La app elige uno al azar.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Mensajes emergentes</div>
+        <div id="lista-mensajes"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Al completar hitos</div>
+        <div id="lista-hitos"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Pasos de la construcción del plan</div>
+        <div id="lista-pasosConstruir"></div>
+      </div>
+    </section>
+
+    <!-- ---------- OFERTAS Y CLIENTES ---------- -->
+    <section class="sec" id="sec-ofertas" data-titulo="Ofertas y clientes">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Prospectos</div>
+          <h2>Ofertas y clientes</h2>
+          <p class="intro">Bolsas de trabajo que aparecen al buscar, clientes precargados, fuentes y las plantillas del correo generado.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Fuentes de búsqueda</div>
+        <div id="lista-fuentes"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Ofertas de trabajo</div>
+        <div id="lista-ofertas"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Clientes potenciales</div>
+        <div id="lista-clientes"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Plantillas de correo</div>
+        <div class="ed-grid" id="campos-correo"></div>
+        <div class="ed-grid" id="campos-correoCuerpo"></div>
+      </div>
+    </section>
+
+    <!-- ---------- METAS Y ÁREAS ---------- -->
+    <section class="sec" id="sec-metas" data-titulo="Metas y áreas">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Vista «Metas»</div>
+          <h2>Metas y áreas</h2>
+          <p class="intro">La plantilla con la que cada persona arranca: objetivos sociales con enlace y meta de contenidos, y las áreas de conseguir trabajo con sus subtareas. Desde la app se editan y crecen; aquí decides con qué se empieza.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Objetivos en redes sociales</div>
+        <div class="ed-nota">Nombre de la red, enlace de la cuenta y meta numérica de contenidos a publicar.</div>
+        <div id="redes-plantilla"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Conseguir trabajo · áreas con subtareas</div>
+        <div class="ed-nota">Cada área tiene su meta numérica y sus casilleros de subtareas: prospectos y canales, entrevistas y acercamientos intencionados. Añade, edita o quita lo que quieras.</div>
+        <div id="areas-plantilla"></div>
+      </div>
+    </section>
+
+    <!-- ---------- INTEGRACIONES ---------- -->
+    <section class="sec" id="sec-integraciones" data-titulo="Integraciones">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Conexiones</div>
+          <h2>Integraciones</h2>
+          <p class="intro">Notion en vivo y el conector de Google (Calendar y Gmail). Todo funciona apagado: se enciende cuando pegas tus credenciales.</p>
+        </div>
+      </div>
+      <div class="bloque vidrio">
+        <div class="area">Notion · base «Tareas» en vivo</div>
+        <div class="ed-nota">Segundos entre refrescos de la base. El token y el ID de la base se escriben desde Ajustes en la app (son datos tuyos, no del catálogo).</div>
+        <div class="ed-grid" id="campos-notion-int"></div>
+      </div>
+      <div class="bloque vidrio" style="margin-top:18px">
+        <div class="area">Google · Calendar y Gmail</div>
+        <div class="ed-nota">Client ID de Google Cloud (tipo xxxx.apps.googleusercontent.com). Sin eso, la app muestra el conector «listo pero apagado». La búsqueda de Gmail decide qué envíos se cuentan como postulaciones.</div>
+        <div class="ed-grid" id="campos-google"></div>
+      </div>
+    </section>
+
+    <!-- ---------- JSON ---------- -->
+    <section class="sec" id="sec-json" data-titulo="JSON completo">
+      <div class="enc" style="margin-top:10px">
+        <div>
+          <div class="k">Avanzado</div>
+          <h2>JSON completo</h2>
+          <p class="intro">El archivo entero. Edita aquí si sabes lo que haces y pulsa <b>Aplicar</b> para validarlo antes de guardar.</p>
+        </div>
+      </div>
+      <textarea id="jsonBruto" spellcheck="false" aria-label="catalogo.js en JSON"></textarea>
+      <div class="acciones" style="margin-top:16px">
+        <button class="btn btn-medio" id="btnAplicarJSON">Aplicar al panel</button>
+        <button class="btn btn-suave" id="btnCopiarJSON">Copiar JSON</button>
+        <button class="btn btn-suave" id="btnRecargarJSON">Volver a la versión actual</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- modal flotante -->
+<div class="venja" id="venja" role="dialog" aria-modal="true" aria-label="Detalle">
+  <div class="modal vidrio" id="modal"></div>
+</div>
+
+<!-- avisos -->
+<div class="mensajes" id="mensajes" aria-live="polite"></div>
+
+<script src="catalogo.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

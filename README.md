@@ -4,11 +4,24 @@ Instantánea del sitio **Norte · Sistema de enfoque** guardada en un solo JSON,
 de la forma más liviana posible: todo el sitio (HTML, CSS, JS, servidor y tests)
 como texto con su hash SHA-256, para que nada se corrompa al viajar.
 
-| Archivo | Qué es |
+| Archivo / carpeta | Qué es |
 |---|---|
-| `beantobox.json` | **El sitio completo** · 10 archivos, ~313 KB |
+| `beantobox.json` | **El sitio completo** en un JSON (12 archivos, ~317 KB, con hashes SHA-256) |
 | `restaurar.js` | Restaura los archivos desde el JSON (verifica hashes) |
+| `sitio/` | **El mismo sitio, suelto y listo para Vercel** (con `vercel.json` y la función `api/notion.js`) |
 | `README.md` | Este archivo |
+
+## Desplegar en Vercel (2 minutos)
+
+1. En <https://vercel.com/new> → **Import Git Repository** → elige `Danideev/Beantobox`.
+2. En *Configure Project* → **Root Directory: `sitio`** (o Settings → General → Root
+   Directory si no aparece) · Framework = **Other**.
+3. **Deploy** → queda publicado en `tu-proyecto.vercel.app`.
+
+La carpeta `sitio/` es estática: no hay build ni dependencias. Lo único que corre
+en Vercel es `api/notion.js` (proxy de Notion, igual que el de `servidor.ps1`).
+En modo alojado la app guarda en el navegador (localStorage) y admin.html ofrece
+**Descargar** el catálogo cuando no hay servidor.
 
 ## Restaurar el sitio
 

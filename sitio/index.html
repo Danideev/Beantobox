@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-ui="ui.marca.nombre">Norte · Sistema de enfoque</title>
+<meta name="description" content="Norte: define tus objetivos, arma tu plan y recibe cada día la tarea que te mueve. Trabajo, ingresos, proyectos, familia, comunidad y salud en un solo tablero.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="nubes anim" aria-hidden="true"><i class="n1"></i><i class="n2"></i><i class="n3"></i><i class="n4"></i></div>
+<a class="saltar" href="#principal">Saltar al contenido</a>
+
+<!-- ======================= ONBOARDING ======================= -->
+<div class="onboarding" id="onboarding" role="dialog" aria-label="Configuración inicial">
+  <div class="tarjeta vidrio">
+
+    <!-- paso 0 · una sola cosa que hacer -->
+    <section class="paso activo" data-paso="0">
+      <div class="marca">
+        <div class="bol" aria-hidden="true">N</div>
+        <div>
+          <div class="nom" data-ui="ui.marca.nombre">Norte</div>
+          <div class="sub" data-ui="ui.marca.sub">Sistema de enfoque</div>
+        </div>
+      </div>
+      <h1><span data-ui="ui.inicio.titulo1">Cada día se abre sin saber por dónde tirar.</span><br><span style="color:var(--acento)" data-ui="ui.inicio.titulo2">Hoy eso cambia.</span></h1>
+      <p class="lede" data-ui="ui.inicio.lede">Define lo que quieres y el sistema te devuelve una sola tarea para avanzar: trabajo, ingresos, proyectos, familia y comunidad, todo cruzado.</p>
+      <div class="acciones">
+        <button class="btn btn-grande" id="btnEmpezar" data-ui="ui.inicio.btn">Empezar</button>
+      </div>
+      <p class="aviso" style="margin-top:16px" data-ui="ui.inicio.aviso">3 preguntas · 2 minutos · después el sistema arma tu plan.</p>
+    </section>
+
+    <!-- paso 1 · trabajo e ingresos -->
+    <section class="paso" data-paso="1">
+      <div class="puntos" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+      <h2 class="pregunta" data-ui="ui.pasos.0.titulo">¿En qué puesto o cargo te gustaría trabajar?</h2>
+      <p class="sub" data-ui="ui.pasos.0.sub">Marca todo lo que encaje contigo, y luego cuánto te gustaría ganar.</p>
+
+      <div class="grupo">
+        <span class="et" data-ui="ui.pasos.0.etPuestos">Puestos</span>
+        <div class="chips" id="chipsPuestos"></div>
+      </div>
+      <div class="grupo">
+        <span class="et" data-ui="ui.pasos.0.etSalario">Cuánto te gustaría ganar (mensual)</span>
+        <div class="chips" id="chipsSalarios"></div>
+      </div>
+      <div class="grupo">
+        <span class="et" data-ui="ui.pasos.0.etModalidad">Modalidad</span>
+        <div class="chips" id="chipsModalidades"></div>
+      </div>
+      <div class="grupo">
+        <label class="et" for="q1Texto" data-ui="ui.pasos.0.etTexto">O escríbelo con tus palabras</label>
+        <textarea class="campo" id="q1Texto" data-ui-ph="ui.pasos.0.phTexto" placeholder="Ej: algo remoto, donde pueda usar mi diseño y me paguen a tiempo…"></textarea>
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-suave" data-volver data-ui="ui.acciones.volver">← Volver</button>
+        <button class="btn btn-medio" data-siguiente data-ui="ui.acciones.siguiente">Siguiente</button>
+      </div>
+    </section>
+
+    <!-- paso 2 · proyectos -->
+    <section class="paso" data-paso="2">
+      <div class="puntos" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></div>
+      <h2 class="pregunta" data-ui="ui.pasos.1.titulo">¿Qué proyectos propios tienes en mente o en marcha?</h2>
+      <p class="sub" data-ui="ui.pasos.1.sub">Hasta <b>5</b>. Pueden ser ideas; el sistema las convierte en un plan validable.</p>
+
+      <div class="grupo">
+        <span class="et" data-ui="ui.pasos.1.etSugerencias">Sugerencias</span>
+        <div class="chips" id="chipsProyectos"></div>
+      </div>
+      <div class="grupo">
+        <span class="et" data-ui="ui.pasos.1.etTus">Tus proyectos</span>
+        <div class="chips" id="chipsMios"></div>
+        <div class="acciones" style="margin-top:14px">
+          <input class="campo" id="proyectoInput" style="flex:1;min-width:220px" data-ui-ph="ui.pasos.1.phProyecto" placeholder="Escribe un proyecto propio…">
+          <button class="btn btn-medio" id="btnAddProyecto" data-ui="ui.pasos.1.btnAnadir">Añadir</button>
+          <span class="contador"><span id="cuentaProyectos">0</span>/5</span>
+        </div>
+      </div>
+      <p class="aviso" id="avisoProyectos" data-ui="ui.pasos.1.aviso">Aún no eliges proyectos. Puedes continuar igual: el sistema trabaja con lo que tengas.</p>
+
+      <div class="acciones">
+        <button class="btn btn-suave" data-volver data-ui="ui.acciones.volver">← Volver</button>
+        <button class="btn btn-medio" data-siguiente data-ui="ui.acciones.siguiente">Siguiente</button>
+      </div>
+    </section>
+
+    <!-- paso 3 · perfil -->
+    <section class="paso" data-paso="3">
+      <div class="puntos" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+      <h2 class="pregunta" data-ui="ui.pasos.2.titulo">¿Quién eres cuando trabajas?</h2>
+      <p class="sub" data-ui="ui.pasos.2.sub">Marca lo que te representa. Esto define a qué puertas toca el sistema.</p>
+
+      <div id="gruposPerfil"></div>
+
+      <div class="grupo">
+        <label class="et" for="q3Texto" data-ui="ui.pasos.2.etTexto">Hobbies, logros, experiencias y conocimientos con tus palabras</label>
+        <textarea class="campo" id="q3Texto" data-ui-ph="ui.pasos.2.phTexto" placeholder="Ej: armó la fiesta de la cuadra, sé vender por WhatsApp, organicé el viaje de egresados…"></textarea>
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-suave" data-volver data-ui="ui.acciones.volver">← Volver</button>
+        <button class="btn btn-grande" id="btnConstruir" data-ui="ui.acciones.construir">Construir mi plan</button>
+      </div>
+    </section>
+
+    <!-- paso 4 · construyendo -->
+    <section class="paso" data-paso="4">
+      <div class="marca">
+        <div class="bol" aria-hidden="true">N</div>
+        <div><div class="nom" data-ui="ui.construyendo.marca">Armando tu sistema</div><div class="sub" data-ui="ui.construyendo.sub">Un momento</div></div>
+      </div>
+      <h2 class="pregunta" id="tituloConstruyendo" data-ui="ui.construyendo.titulo">Cruzando tus objetivos con tu perfil…</h2>
+      <div id="procesoConstruir" style="margin-top:22px;display:flex;flex-direction:column;gap:12px"></div>
+    </section>
+
+    <!-- paso 5 · plan listo -->
+    <section class="paso" data-paso="5">
+      <div class="puntos" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+      <h2 class="pregunta" data-ui="ui.listo.titulo">Tu plan está listo.</h2>
+      <p class="sub" data-ui="ui.listo.sub">Con esto queda armado tu sistema. Puedes cambiarlo cuando quieras desde Ajustes.</p>
+      <div id="resumenPlan" style="display:flex;flex-direction:column;gap:12px"></div>
+      <div class="acciones">
+        <button class="btn btn-grande" id="btnEntrar" data-ui="ui.listo.btn">Entrar a mi sistema</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ======================= APP ======================= -->
+<div class="app" id="app" hidden>
+
+  <aside class="rail" id="rail" aria-label="Navegación">
+    <div class="marca">
+      <div class="bol" aria-hidden="true">N</div>
+      <div>
+        <div class="nom" data-ui="ui.marca.nombre">Norte</div>
+        <div class="sub" id="nombreRail">Tu sistema</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <div class="lab" data-ui="ui.menu.grupos.enfoque">Enfoque</div>
+      <button class="on" data-vista="hoy">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span data-ui="ui.menu.items.hoy">Hoy</span>
+      </button>
+      <button data-vista="objetivos">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h7v14H4zM13 5h7v9h-7z"/></svg>
+        <span data-ui="ui.menu.items.objetivos">Objetivos</span>
+      </button>
+      <button data-vista="metas">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+        <span data-ui="ui.menu.items.metas">Metas</span>
+      </button>
+      <button data-vista="prospectos">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+        <span data-ui="ui.menu.items.prospectos">Buscar trabajo</span>
+      </button>
+      <div class="lab" data-ui="ui.menu.grupos.vida">Vida</div>
+      <button data-vista="red">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="14" r="3"/><path d="M10.5 10.5l4 2"/></svg>
+        <span data-ui="ui.menu.items.red">Red</span>
+      </button>
+      <button data-vista="vida">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-9a4 4 0 017-2.6A4 4 0 0119 11c0 4.6-7 9-7 9z"/></svg>
+        <span data-ui="ui.menu.items.vida">Vida esencial</span>
+      </button>
+      <button data-vista="calendario">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span data-ui="ui.menu.items.calendario">Calendario</span>
+      </button>
+      <button data-vista="tablero">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h6M7 16h8"/></svg>
+        <span data-ui="ui.menu.items.tablero">Tablero</span>
+      </button>
+      <div class="lab" data-ui="ui.menu.grupos.sistema">Sistema</div>
+      <button data-vista="ajustes">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+        <span data-ui="ui.menu.items.ajustes">Ajustes</span>
+      </button>
+    </nav>
+
+    <div class="pie">
+      <div class="estado-nube" id="estadoNotion"><i aria-hidden="true"></i><span>Notion sin conectar</span></div>
+      <span data-ui="ui.marca.pie">Norte · prototipo</span>
+    </div>
+  </aside>
+  <div class="venja" id="scrimRail" hidden></div>
+
+  <main class="cuerpo" id="principal">
+    <header class="topbar">
+      <button class="menu" id="btnMenu" aria-expanded="false" aria-controls="rail" data-ui="ui.topbar.menu">Menú</button>
+      <div class="crumb" id="crumb"><b>Hoy</b> · <span id="fechaHoy">—</span></div>
+      <div class="sep"></div>
+      <button class="sonido on" id="btnSonido" aria-pressed="true" data-ui="ui.topbar.sonido">♪ Sonido</button>
+      <div class="avatar" id="avatarRail">N</div>
+    </header>
+
+    <!-- ---------- HOY ---------- -->
+    <section class="vista on" id="vista-hoy">
+      <div class="hero-hoy vidrio subir">
+        <div class="k" id="kHola">Buenos días</div>
+        <h1 id="tituloHoy">Tu sistema está listo.</h1>
+        <p class="por" id="porcentajeHoy">—</p>
+        <div class="tarea-hoy">
+          <div>
+            <div class="meta-tarea" id="metaTarea" data-ui="ui.bloques.metaTarea">Tu única tarea de hoy</div>
+            <div class="txt" id="txtTarea">—</div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-medio" id="btnHoyHecha" data-ui="ui.botones.hoyHecha">Marcar hecha</button>
+            <button class="btn btn-suave" id="btnHoyOtra" data-ui="ui.botones.hoyOtra">Otra tarea</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="enc" style="margin-bottom:6px">
+        <div>
+          <div class="k" data-ui="ui.enc.hoy.k">Resumen</div>
+          <h2 data-ui="ui.enc.hoy.h2">Cada objetivo, en una mirada</h2>
+          <p data-ui="ui.enc.hoy.p">Entra al detalle con un clic. Todo lo que hagas aquí se refleja en tus tableros.</p>
+        </div>
+      </div>
+      <div class="resumen" id="tarjetasObjetivos"></div>
+
+      <div class="duo">
+        <div class="bloque vidrio">
+          <h3 data-ui="ui.bloques.red.t">Red del día</h3>
+          <div class="sub2" data-ui="ui.bloques.red.d">Máximo 3 acciones: contactar, felicitar o compartir. Sin saturar.</div>
+          <div id="rutinaRed"></div>
+        </div>
+        <div class="bloque vidrio">
+          <h3 data-ui="ui.bloques.evento.t">Próximo encuentro</h3>
+          <div class="sub2" data-ui="ui.bloques.evento.d">Cumpleaños, feriados y fechas que no deberías perder.</div>
+          <div id="proximoEvento"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- OBJETIVOS ---------- -->
+    <section class="vista" id="vista-objetivos">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.objetivos.k">Ejecución</div>
+          <h2 data-ui="ui.enc.objetivos.h2">Tus tableros</h2>
+          <p data-ui="ui.enc.objetivos.p">Un tablero por objetivo o proyecto. Avanza tareas con un botón: nada más.</p>
+        </div>
+        <button class="btn btn-medio" id="btnNuevaTarea" data-ui="ui.botones.nuevaTarea">+ Nueva tarea</button>
+      </div>
+      <div class="tabs-obj" id="tabsObjetivos"></div>
+      <div class="tablero" id="tablero"></div>
+    </section>
+
+    <!-- ---------- PROSPECTOS / TRABAJO ---------- -->
+    <section class="vista" id="vista-prospectos">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.prospectos.k">Ingresos</div>
+          <h2 data-ui="ui.enc.prospectos.h2">Buscar trabajo y clientes</h2>
+          <p data-ui="ui.enc.prospectos.p">El mismo proceso para postular a un empleo o vender un proyecto: oferta → correo → seguimiento.</p>
+        </div>
+        <button class="btn btn-medio" id="btnBuscarOfertas" data-ui="ui.botones.buscarOfertas">Buscar ofertas</button>
+      </div>
+
+      <div class="fuentes" id="fuentes"></div>
+
+      <div class="tabs-obj" id="tabsProspectos" style="margin-top:6px">
+        <button class="tab-obj on" data-modo="trabajo" data-ui="ui.tabs.trabajo">Ofertas de trabajo</button>
+        <button class="tab-obj" data-modo="cliente" data-ui="ui.tabs.cliente">Clientes potenciales</button>
+      </div>
+
+      <div id="listaProspectos"></div>
+    </section>
+
+    <!-- ---------- RED ---------- -->
+    <section class="vista" id="vista-red">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.red.k">Comunidad</div>
+          <h2 data-ui="ui.enc.red.h2">Tu red de contacto</h2>
+          <p data-ui="ui.enc.red.p">Carga a quienes forman tu comunidad. El sistema te sugiere un mensaje al día, sin saturar.</p>
+        </div>
+        <button class="btn btn-medio" id="btnNuevoContacto" data-ui="ui.botones.nuevoContacto">+ Añadir contacto</button>
+      </div>
+      <div class="duo">
+        <div>
+          <div class="bloque vidrio" style="margin-bottom:16px">
+            <h3 data-ui="ui.bloques.rutina.t">Rutina de contacto</h3>
+            <div class="sub2" id="metaRutina" data-ui="ui.bloques.metaRutina">Límite saludable: 3 contactos por día</div>
+            <div id="rutinaNetworking"></div>
+          </div>
+          <div id="listaContactos"></div>
+        </div>
+        <div>
+          <div class="bloque vidrio">
+            <h3 data-ui="ui.bloques.comun.t">Redes en comunidad</h3>
+            <div class="sub2" data-ui="ui.bloques.comun.d">Mensajes y charlas sugeridas según tu perfil, una por día.</div>
+            <div id="sugerenciasMensaje"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- VIDA ESENCIAL ---------- -->
+    <section class="vista" id="vista-vida">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.vida.k">Salud y familia</div>
+          <h2 data-ui="ui.enc.vida.h2">Vida esencial</h2>
+          <p data-ui="ui.enc.vida.p">Salud mental, física y espiritual, y tiempo con tu familia. Rituales chicos que sostienen todo lo demás.</p>
+        </div>
+      </div>
+      <div id="areasVida"></div>
+    </section>
+
+    <!-- ---------- CALENDARIO ---------- -->
+    <section class="vista" id="vista-calendario">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.calendario.k">Social</div>
+          <h2 data-ui="ui.enc.calendario.h2">Fechas que importan</h2>
+          <p data-ui="ui.enc.calendario.p">Precargado para todo usuario: feriados, día de la madre, el padre, los amigos… y los cumpleaños de tu red.</p>
+        </div>
+        <button class="btn btn-medio" id="btnNuevoEvento" data-ui="ui.botones.nuevoEvento">+ Recordar fecha</button>
+      </div>
+      <div class="cuadricula">
+        <div class="bloque vidrio">
+          <div class="area" data-ui="ui.areas.mes">Este mes</div>
+          <div id="eventosMes"></div>
+        </div>
+        <div class="bloque vidrio">
+          <div class="area" data-ui="ui.areas.cumple">Cumpleaños de tu red</div>
+          <div id="cumpleanosRed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- METAS NUMÉRICAS ---------- -->
+    <section class="vista" id="vista-metas">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.metas.k">Metas numéricas</div>
+          <h2 data-ui="ui.enc.metas.h2">Redes sociales y conseguir trabajo</h2>
+          <p data-ui="ui.enc.metas.p">Cada área tiene su casillero de meta y sus subtareas. Suma con un clic lo que publicas o envías.</p>
+        </div>
+        <button class="btn btn-medio" id="btnNuevaArea" data-ui="ui.botones.nuevaArea">+ Añadir área</button>
+      </div>
+
+      <div class="bloque vidrio" style="margin-bottom:18px">
+        <div class="area" data-ui="ui.bloques.redes.t">Objetivos en redes sociales</div>
+        <div class="sub2" data-ui="ui.bloques.redes.d">Enlace de tu cuenta, meta de contenidos a publicar y avance con un clic.</div>
+        <div id="listaRedes"></div>
+        <div class="acciones" style="margin-top:16px">
+          <button class="btn btn-suave" id="btnNuevaRed" data-ui="ui.botones.nuevaRed">+ Añadir objetivo social</button>
+        </div>
+      </div>
+
+      <div class="bloque vidrio">
+        <div class="area" data-ui="ui.bloques.trabajo.t">Conseguir trabajo</div>
+        <div class="sub2" data-ui="ui.bloques.trabajo.d">Áreas con meta numérica y sus subtareas: prospectos, entrevistas y acercamientos.</div>
+        <div id="listaAreasTrabajo"></div>
+      </div>
+
+      <div class="bloque vidrio" id="bloqueNotionVivo" style="margin-top:18px">
+        <div class="area" data-ui="ui.bloques.notionVivo.t">Base «Tareas» · en vivo</div>
+        <div class="sub2" id="subNotionVivo" data-ui="ui.bloques.notionVivo.d">Se actualiza sola cada pocos segundos desde tu Notion.</div>
+        <div id="notionVivo"></div>
+      </div>
+    </section>
+
+    <!-- ---------- TABLERO DE IDEAS ---------- -->
+    <section class="vista" id="vista-tablero">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.tablero.k">Mural</div>
+          <h2 data-ui="ui.enc.tablero.h2">Tu tablero de ideas</h2>
+          <p data-ui="ui.enc.tablero.p">Pega post-its, dibuja tus metas y guarda audio, imágenes, gráficos o lo que sea. Sumar y quitar a un lado.</p>
+        </div>
+      </div>
+      <div class="tablero-mural">
+        <aside class="herramientas vidrio" aria-label="Sumar y quitar">
+          <div class="area">Sumar</div>
+          <button class="btn btn-medio" id="tabNota" data-ui="ui.botones.nuevaNota">+ Nota</button>
+          <button class="btn btn-suave" id="tabDibujo" data-ui="ui.botones.nuevoDibujo">+ Dibujo</button>
+          <label class="btn btn-suave" style="cursor:pointer"><span data-ui="ui.botones.subirArchivo">Subir archivo</span>
+            <input type="file" id="tabArchivo" accept="image/*,audio/*,video/*,.pdf,.txt,.json,.zip" hidden multiple></label>
+          <div class="sub2" id="tabEstadoServidor" style="margin-top:10px"></div>
+        </aside>
+        <div class="mural" id="mural"></div>
+      </div>
+    </section>
+
+    <!-- ---------- AJUSTES ---------- -->
+    <section class="vista" id="vista-ajustes">
+      <div class="enc">
+        <div>
+          <div class="k" data-ui="ui.enc.ajustes.k">Sistema</div>
+          <h2 data-ui="ui.enc.ajustes.h2">Ajustes</h2>
+          <p data-ui="ui.enc.ajustes.p">Tu perfil, tu conexión con Notion, sonido y tus datos.</p>
+        </div>
+      </div>
+
+      <div class="cuadricula">
+        <div class="bloque vidrio">
+          <div class="area" data-ui="ui.areas.perfil">Tu perfil</div>
+          <div class="campo2"><label for="inpNombre">Cómo te llamamos</label><input id="inpNombre" placeholder="Tu nombre"></div>
+          <div class="campo2"><label for="inpPuesto">Puesto objetivo</label><input id="inpPuesto" placeholder="Ej: Diseñador UX"></div>
+          <div class="campo2"><label for="inpSalario">Meta de ingreso</label><input id="inpSalario" placeholder="Ej: 1.200 USD"></div>
+          <button class="btn btn-medio" id="btnGuardarPerfil" data-ui="ui.botones.guardarPerfil">Guardar perfil</button>
+        </div>
+
+        <div class="bloque vidrio">
+          <div class="area" data-ui="ui.areas.notion">Conexión con Notion</div>
+          <p class="sub2">Conecta tu base de tareas en Notion. El sistema lee y escribe ahí en vivo, cada pocos segundos.</p>
+          <div class="campo2"><label for="inpToken">Integration token (secret_…)</label><input id="inpToken" placeholder="secret_…" autocomplete="off"></div>
+          <div class="campo2"><label for="inpDb">Database ID</label><input id="inpDb" placeholder="32 caracteres de la URL de tu base"></div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-medio" id="btnConectarNotion" data-ui="ui.botones.conectar">Conectar</button>
+            <button class="btn btn-suave" id="btnProbarNotion" data-ui="ui.botones.probar">Probar</button>
+            <button class="btn btn-suave" id="btnBuscarBase" data-ui="ui.botones.buscarBase">Buscar base «Tareas»</button>
+          </div>
+          <div class="campo2" style="margin-top:16px"><label for="inpNotionCada">Refresco en vivo (segundos)</label><input id="inpNotionCada" type="number" min="5" max="300" placeholder="15"></div>
+          <p class="aviso" id="avisoNotion" style="margin-top:14px">Sin conectar. Puedes usar Norte igual: todo se guarda en tu navegador.</p>
+        </div>
+
+        <div class="bloque vidrio">
+          <div class="area" data-ui="ui.bloques.googleVivo.t">Google (Calendar y Gmail)</div>
+          <p class="sub2" data-ui="ui.bloques.googleVivo.d">Conecta tu cuenta para traer tus próximos encuentros y contar postulaciones enviadas.</p>
+          <div class="campo2"><label for="inpGoogleId">Client ID de Google Cloud</label><input id="inpGoogleId" placeholder="xxxx.apps.googleusercontent.com" autocomplete="off"></div>
+          <div class="campo2"><label for="inpGmailQuery">Búsqueda de Gmail para tus envíos</label><input id="inpGmailQuery" placeholder="in:sent postulación newer_than:30d"></div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-medio" id="btnConectarGoogle" data-ui="ui.botones.conectarGoogle">Conectar Google</button>
+            <button class="btn btn-suave" id="btnDesconectarGoogle" hidden>Desconectar</button>
+          </div>
+          <p class="aviso" id="avisoGoogle" style="margin-top:14px">Conector listo pero apagado: pega un client ID y pulsa Conectar.</p>
+        </div>
+
+        <div class="bloque vidrio">
+          <div class="area" data-ui="ui.areas.datos">Tus datos</div>
+          <p class="sub2">Todo tu sistema en un archivo JSON: cópio, respaldo o mígralo a otro equipo.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-medio" id="btnExportar" data-ui="ui.botones.exportar">Exportar JSON</button>
+            <label class="btn btn-suave" style="cursor:pointer"><span data-ui="ui.botones.importar">Importar JSON</span><input type="file" id="inpImportar" accept="application/json,.json" hidden></label>
+          </div>
+          <hr style="border:none;border-top:1px solid var(--linea);margin:20px 0">
+          <button class="btn btn-suave" id="btnReiniciar" data-ui="ui.botones.reiniciar">Reiniciar mi sistema</button>
+        </div>
+
+        <div class="bloque vidrio">
+          <div class="area" data-ui="ui.areas.acompanar">Acompañamiento</div>
+          <p class="sub2">Mensajes que aparecen solos para recordarte que sigues avanzando.</p>
+          <div class="chips">
+            <button class="chip on" id="chipMensajes" data-ui="ui.botones.chipMensajes">Mensajes activados</button>
+            <button class="chip on" id="chipSonido" data-ui="ui.botones.chipSonido">Sonido activado</button>
+          </div>
+          <p class="aviso" style="margin-top:14px">Cada 8 minutos, sin interrumpirte en lo que estás haciendo.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- navegación móvil -->
+<div class="barra-movil" id="barraMovil" hidden>
+  <button class="on" data-vista="hoy"><span data-ui="ui.menu.movil.hoy">Hoy</span></button>
+  <button data-vista="objetivos"><span data-ui="ui.menu.movil.objetivos">Metas</span></button>
+  <button data-vista="metas"><span data-ui="ui.menu.movil.metas">Metas+</span></button>
+  <button data-vista="prospectos"><span data-ui="ui.menu.movil.prospectos">Buscar</span></button>
+  <button data-vista="red"><span data-ui="ui.menu.movil.red">Red</span></button>
+  <button data-vista="vida"><span data-ui="ui.menu.movil.vida">Vida</span></button>
+  <button data-vista="calendario"><span data-ui="ui.menu.movil.calendario">Fechas</span></button>
+  <button data-vista="ajustes"><span data-ui="ui.menu.movil.ajustes">Ajustes</span></button>
+</div>
+
+<!-- modal flotante -->
+<div class="venja" id="venja" role="dialog" aria-modal="true" aria-label="Detalle">
+  <div class="modal vidrio" id="modal"></div>
+</div>
+
+<!-- mensajes emergentes -->
+<div class="mensajes" id="mensajes" aria-live="polite"></div>
+
+<script src="catalogo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
